@@ -1,0 +1,292 @@
+import React, {Component} from 'react';
+import { ScrollView, Text, View, FlatList, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import Swiper from 'react-native-swiper';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+export default class App extends Component {
+  render() {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+        }}
+      >
+        {/* Header */}
+        <View
+          style={{
+            height: 50,
+            // backgroundColor: '#FF6A15',
+            flexDirection: 'row',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.18,
+            shadowRadius: 1.00,
+            
+            elevation: 1            
+          }}
+        >
+          <Text
+            style={{
+              flex: 1,
+              marginLeft: 10,
+              fontSize: 20,
+              fontWeight: 'bold',
+              alignSelf: 'center'
+            }}
+          >
+            Textile Application
+          </Text>
+          <TouchableOpacity
+            style={{
+              alignSelf: 'center',
+              marginRight: 10,
+              flexDirection: 'row'
+            }}
+          >
+            <EvilIcons name="cart" size={30} style={{ color: '#ff8400'  }} />
+            <View
+              style={{
+                alignSelf: 'center',
+                backgroundColor: '#f0f0f0',
+                padding: 4,
+                borderRadius: 10
+              }}
+            >
+              <Text
+                style={{
+                  justifyContent: 'center',
+                  color: '#ff8400'
+                }}
+              >
+                10
+              </Text>
+
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView>
+        <View
+          style={{
+            height: 200
+          }}
+        >
+
+          <Swiper
+            autoplay={true}
+            showsButtons={false}
+            dotColor="#f0f0f0ee"
+            activeDotColor="#c0c0c0ee"
+          >
+            <View style={{
+              height: 200,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#97CAE5',
+            }}>
+              <Image
+                style={{
+                  width: '100%',
+                  height: 200
+                }}
+                blurRadius={20}
+                resizeMode="cover"
+                source={require('../media/slider1.jpg')}
+              />
+              <Text
+                style={{
+                  position: 'absolute',
+                  fontSize: 25,
+                  fontWeight: 'bold',
+                  color: '#fff'
+                }}
+              >
+                The best textiles you can buy
+              </Text>
+            </View>
+              <Image
+                style={{
+                  width: '100%',
+                  height: 200
+                }}
+                // blurRadius={10}
+                resizeMode="cover"
+                resizeMethod="resize"
+                source={require('../media/slider2.jpg')}
+              />
+          </Swiper>
+        </View>
+        <View>
+          <View
+            style={{
+              flexDirection: 'row'
+            }}
+          >
+            <Text
+              style={{
+                flex: 1,
+                marginTop: 10,
+                marginLeft: 10,
+                fontSize: 20,
+                fontWeight: '500'
+              }}
+            >
+              Demo Shop 1
+            </Text>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginRight: 10,
+                justifyContent: 'center'
+              }}
+            >
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: '#555'
+                }}
+              >
+                Visit Shop <AntDesign name="right" />
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            horizontal
+            data={[{key: 'a'}, {key: 'b'}, { key: 'c' }]}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => 
+              <TouchableOpacity
+                style={{
+                  width: 150,
+                  height: 250,
+                  margin: 10,
+                  borderRadius: 10,
+                  // backgroundColor: 'red'
+                }}
+              >
+                <Image
+                  resizeMode="contain"
+                  style={{
+                    width: 150,
+                    backgroundColor: '#fff',
+                    height: 200
+                  }}
+                  source={require('../media/demoProduct.jpg')}
+                />
+                <View>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 15,
+                      margin: 5,
+                      fontWeight: 'bold',
+                      textAlign: 'center'
+                    }}
+                  >
+                    This is demo
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center'
+                    }}
+                  >
+                    $15.25
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            }
+          />
+        </View>
+        <View>
+          <View
+            style={{
+              flexDirection: 'row'
+            }}
+          >
+            <Text
+              style={{
+                flex: 1,
+                marginTop: 10,
+                marginLeft: 10,
+                fontSize: 20,
+                fontWeight: '500'
+              }}
+            >
+              Demo Shop 1
+            </Text>
+            <TouchableOpacity
+              style={{
+                marginTop: 10,
+                marginRight: 10,
+                justifyContent: 'center'
+              }}
+            >
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: '#555'
+                }}
+              >
+                Visit Shop <AntDesign name="right" />
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={[{key: 'a'}, {key: 'b'}, { key: 'c' }]}
+            renderItem={({item}) => 
+              <TouchableOpacity
+                style={{
+                  width: 150,
+                  height: 250,
+                  margin: 10,
+                  borderRadius: 10,
+                  // backgroundColor: 'red'
+                }}
+              >
+                <Image
+                  resizeMode="contain"
+                  style={{
+                    width: 150,
+                    backgroundColor: '#fff',
+                    height: 200
+                  }}
+                  source={require('../media/demoProduct.jpg')}
+                />
+                <View>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 15,
+                      margin: 5,
+                      fontWeight: 'bold',
+                      textAlign: 'center'
+                    }}
+                  >
+                    This is demo
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'center'
+                    }}
+                  >
+                    $15.25
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            }
+          />
+        </View>
+
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+}
+
