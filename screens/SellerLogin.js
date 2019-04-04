@@ -3,9 +3,14 @@ import { AsyncStorage, SafeAreaView, Alert, TextInput, Text, View, TouchableOpac
 import { Navigation } from 'react-native-navigation';
 
 const dummyLoginData = {
-  'test1@gmail.com': 'hellouser1',
-  'test2@gmail.com': 'hellouser2',
-  'test3@gmail.com': 'hellouser3',
+  'test1@gmail.com': {
+    password: 'hellouser1',
+    name: 'Seller Shop 1'
+  },
+  'test2@gmail.com': {
+    password: 'hellouser2',
+    name: 'Seller Shop 2'
+  },
 }
 
 export default class App extends Component {
@@ -15,17 +20,28 @@ export default class App extends Component {
   }
   handleLogin = async () => {
     // Check credentials with server here
-    if(dummyLoginData[this.state.email]) {
+    const {
+      email
+    } = this.state;
+    if(dummyLoginData[email] && dummyLoginData[email].password === this.state.password) {
       try {
         await AsyncStorage.setItem('LOGGED_IN', 'true');
-        await AsyncStorage.setItem('LOGGED_IN_TYPE', 'SELLER');
+        await AsyncStorage.setItem('LOGGED_IN_TYPE', JSON.stringify({
+          name: dummyLoginData[email].password,
+          email: email
+        }));
         Navigation.setRoot({
           root: {
             stack: {
+              
               children: [{
                 component: {
-                  name: "navigation.seller.sellerHome"
-                }
+                  name: "navigation.seller.sellerHome",
+                  passProps: {
+                    name: dummyLoginData[email].password,
+                    email: email
+                  }
+                },
               }],
               options: {
                 topBar: {

@@ -1,9 +1,34 @@
 import React, {Component} from 'react';
-import { AsyncStorage, Text, SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
+import { RefreshControl, Image, FlatList, AsyncStorage, Text, SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Navigation } from 'react-native-navigation';
+import Realm from '../realm';
 
 export default class App extends Component {
+  state = {
+    products: [],
+    refreshing: false
+  }
+
+  _onRefresh = () => {
+    this.setState({
+      refreshing: true
+    });
+    Realm.getRealm((realm) => {
+      let products = realm.objects('Products').sorted('timestamp', true);
+      this.setState({
+        products,
+        refreshing: false
+      })
+      
+    });
+  }
+
+  componentDidMount() {
+    this.navigationEventListener = Navigation.events().bindComponent(this);
+    this._onRefresh();
+  }
+
   handleLogout = async () => {
     await AsyncStorage.removeItem('LOGGED_IN');
     await AsyncStorage.removeItem('LOGGED_IN_TYPE');
@@ -15,6 +40,7 @@ export default class App extends Component {
               name: "navigation.root.initializing"
               // name: "navigation.customer.customerHome"
             }
+            
           }],
           options: {
             topBar: {
@@ -26,10 +52,25 @@ export default class App extends Component {
       }
     });
   }
+
+  handleDelete = () => {
+    Realm.getRealm((realm) => {
+      let products = realm.objects('Products');
+      realm.write(() => {
+        realm.delete(products);
+        this.setState({ products: [] })
+      });
+    });
+  }
   handleProductCreation = () => {
     Navigation.push(this.props.componentId, {
       component: {
+        id: 'createProductPage',
         name: 'navigation.seller.createProduct',
+        passProps: {
+          email: this.props.email,
+          name: this.props.name
+        },
         options: {
           topBar: {
             visible: false,
@@ -38,6 +79,10 @@ export default class App extends Component {
         }
       }
     });
+  }
+
+  componentDidAppear() {
+    this._onRefresh();
   }
 
   render() {
@@ -70,8 +115,18 @@ export default class App extends Component {
               alignSelf: 'center'
             }}
           >
-            Seller Homepage
+            Hello {this.props.name}
           </Text>
+          <TouchableOpacity
+            onPress={this.handleDelete}
+            style={{
+              alignSelf: 'center',
+              marginRight: 10,
+              flexDirection: 'row'
+            }}
+          >
+            <MaterialIcons name="delete" size={30} style={{ color: '#ff8400'  }} />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={this.handleLogout}
             style={{
@@ -95,11 +150,18 @@ export default class App extends Component {
           
         </View>
         <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
           style={{
             flex: 1
           }}
         >
-          <MaterialIcons name="person" size={150} style={{ alignSelf: 'center', color: '#d0d0d0' }} />
+          { this.state.products.length === 0 && <View>
+            <MaterialIcons name="person" size={150} style={{ alignSelf: 'center', color: '#d0d0d0' }} />
           <Text
             style={{
               textAlign: 'center',
@@ -137,8 +199,104 @@ export default class App extends Component {
               
               This page will show the product sales and other options, for the purpose of demo placeholders have been used.
             </Text>
-
+            <Text
+              style={{
+                textAlign: 'center',
+                marginBottom: 10
+              }}
+            >
+              Logged in as {this.props.email}
+            </Text>
           </View>
+          </View>}
+          <FlatList
+            
+            data={this.state.products}
+            renderItem={({item}) => 
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  // justifyContent: 'center',
+                  margin: 10,
+                  // borderRadius: 10,
+                  // backgroundColor: 'red'
+                }}
+              >
+                <Text>
+                  {/* {JSON.stringify(JSON.parse(item.media).uri)} */}
+                </Text>
+                <View>
+                  <Image
+                    // blurRadius={10}
+                    resizeMode="cover"
+                    style={{
+                      borderRadius: 10,
+                      backgroundColor: '#f0f0f0',
+                      height: 200
+                    }}
+                    source={JSON.parse(item.media)}
+                  />
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      backgroundColor: '#ffffffaa',
+                      padding: 10,
+                      borderRadius: 10,
+                      bottom: 20,
+                      right: 20
+                    }}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 15,
+                        margin: 5,
+                        fontWeight: 'bold',
+                        textAlign: 'center'
+                      }}
+                    >
+                      Sales
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      {JSON.stringify(JSON.parse(item.sales).length)}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    // position: 'absolute',
+                    backgroundColor: '#ffffffaa',
+                  }}
+                >
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 20,
+                      margin: 5,
+                      fontWeight: 'bold',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'left',
+                      margin: 5,
+                    }}
+                  >
+                    {item.price}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            }
+          />
+          
         </ScrollView>
       </SafeAreaView>
     );

@@ -3,8 +3,68 @@ import { ScrollView, Text, View, FlatList, Image, TouchableOpacity, SafeAreaView
 import Swiper from 'react-native-swiper';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Realm from '../realm';
+import { Navigation } from 'react-native-navigation';
 
 export default class App extends Component {
+  processRealmObj = (RealmObject, callback) => {
+    const result = Object.keys(RealmObject).map(key => ({ ...RealmObject[key] }));
+    callback(result);
+  }
+
+  state = {
+    shops: [],
+    final: {}
+  }
+
+  _onRefresh = () => {
+    this.setState({
+      refreshing: true
+    });
+    let final = {};
+    let shops = [];
+    Realm.getRealm((realm) => {
+      let products = realm.objects('Products').sorted('timestamp', true);
+      this.processRealmObj( products, (result) => {
+        result.forEach((product) => {
+          if(!final[product.shop_name]) {
+            shops.push(product.shop_name);
+            final[product.shop_name] = [product];
+          } else {
+            final[product.shop_name].push(product);
+          }
+        })
+      });
+      this.setState({ final, shops });
+    });
+    
+  }
+
+  componentDidMount() {
+    this._onRefresh();
+  }
+
+  handleProductDetail = (_id) => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: 'navigation.customer.productDetail',
+        passProps: {
+          _id
+        },
+        options: {
+          topBar: {
+            visible: false,
+            drawBehind: true
+          },
+          bottomTabs: {
+            animate: true,
+            visible: false
+          }
+        }
+      }
+    });
+  }
+
   render() {
     return (
       <SafeAreaView
@@ -119,88 +179,95 @@ export default class App extends Component {
               />
           </Swiper>
         </View>
-        <View>
-          <View
-            style={{
-              flexDirection: 'row'
-            }}
-          >
-            <Text
+        {
+          this.state.shops.map((value) => {
+            return <View>
+            <View
               style={{
-                flex: 1,
-                marginTop: 10,
-                marginLeft: 10,
-                fontSize: 20,
-                fontWeight: '500'
-              }}
-            >
-              Demo Shop 1
-            </Text>
-            <TouchableOpacity
-              style={{
-                marginTop: 10,
-                marginRight: 10,
-                justifyContent: 'center'
+                flexDirection: 'row'
               }}
             >
               <Text
                 style={{
-                  alignSelf: 'center',
-                  color: '#555'
+                  flex: 1,
+                  marginTop: 10,
+                  marginLeft: 10,
+                  fontSize: 20,
+                  fontWeight: '500'
                 }}
               >
-                Visit Shop <AntDesign name="right" />
+                {value}
               </Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            horizontal
-            data={[{key: 'a'}, {key: 'b'}, { key: 'c' }]}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({item}) => 
               <TouchableOpacity
                 style={{
-                  width: 150,
-                  height: 250,
-                  margin: 10,
-                  borderRadius: 10,
-                  // backgroundColor: 'red'
+                  marginTop: 10,
+                  marginRight: 10,
+                  justifyContent: 'center'
                 }}
               >
-                <Image
-                  resizeMode="contain"
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                    color: '#555'
+                  }}
+                >
+                  Visit Shop <AntDesign name="right" />
+                </Text>
+              </TouchableOpacity>
+            </View>
+  
+            <FlatList
+              horizontal
+              data={this.state.final[value]}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({item}) => 
+                <TouchableOpacity
+                  onPress={() => this.handleProductDetail(item._id)}
                   style={{
                     width: 150,
-                    backgroundColor: '#fff',
-                    height: 200
+                    height: 250,
+                    margin: 10,
+                    borderRadius: 10,
+                    // backgroundColor: 'red'
                   }}
-                  source={require('../media/demoProduct.jpg')}
-                />
-                <View>
-                  <Text
-                    numberOfLines={1}
+                >
+                  <Image
+                    resizeMode="contain"
                     style={{
-                      fontSize: 15,
-                      margin: 5,
-                      fontWeight: 'bold',
-                      textAlign: 'center'
+                      width: 150,
+                      backgroundColor: '#fff',
+                      height: 200
                     }}
-                  >
-                    This is demo
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: 'center'
-                    }}
-                  >
-                    $15.25
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            }
-          />
-        </View>
+                    source={JSON.parse(item.media)}
+                  />
+                  <View>
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 15,
+                        margin: 5,
+                        fontWeight: 'bold',
+                        textAlign: 'center'
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      Rs. {item.price}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              }
+            />
+          </View>
+          })
+        }
+
+        
         <View>
           <View
             style={{

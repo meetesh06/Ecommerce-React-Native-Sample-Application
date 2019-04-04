@@ -131,7 +131,10 @@ export default class App extends Component {
             stack: {
               children: [{
                 component: {
-                  name: "navigation.seller.sellerHome"
+                  name: "navigation.seller.sellerHome",
+                  passProps: {
+                    ...JSON.parse(type)
+                  }
                 }
               }],
               options: {
