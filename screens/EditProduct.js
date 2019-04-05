@@ -247,7 +247,7 @@ export default class App extends Component {
                 style={{
                   // flex: 1,
                   // justifyContent: 'center',
-                  // margin: 10,
+                  margin: 10,
                   width: 200,
                   // height: 150,
                   borderRadius: 10,

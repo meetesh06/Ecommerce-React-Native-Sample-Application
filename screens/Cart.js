@@ -127,7 +127,9 @@ class Cart extends Component {
                         flexDirection: 'row'
                       }}
                     >
-                      <Image source={this.props.cart[val].media} style={{ borderRadius: 10, width: 100, height: 100, margin: 5 }} resizeMode="cover"/>
+                      {
+                        this.props.cart[val] && this.props.cart[val].media && <Image source={this.props.cart[val].media} style={{ borderRadius: 10, width: 100, height: 100, margin: 5 }} resizeMode="cover"/>
+                      }
                       <View
                         style={{
                           flex: 1,
@@ -135,50 +137,59 @@ class Cart extends Component {
                           paddingTop: 20
                         }}
                       >
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: 'bold'
-                          }}
-                        >
-                        {this.props.cart[val].name}
-
-                        </Text>
+                        {
+                          this.props.cart[val] && this.props.cart[val].name &&
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 'bold'
+                            }}
+                          >
+                          {this.props.cart[val].name}
+                          </Text>
+                        }
                         
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            // fontWeight: 'bold'
-                          }}
-                        >
-                        Rs. {this.props.cart[val].price}
+                        {
+                          this.props.cart[val] && this.props.cart[val].price &&
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              // fontWeight: 'bold'
+                            }}
+                          >
+                          
+                          Rs. {this.props.cart[val].price}
 
-                        </Text>
+                          </Text>
+                        }
                         
                       </View>
-                      <View
-                        style={{
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => {
-                            const new_val = this.state.keys;
-                            let price = this.state.price;
-                            price -= parseInt(this.props.cart[val].price);
-                            delete new_val[index];
-                            this.setState({
-                              keys: new_val,
-                              price
-                            }, () => {
-                              this.props.removeFromCart(val)
-                            });
+                      {
+                          this.props.cart[val] && this.props.cart[val].price &&
+                        <View
+                          style={{
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <TouchableOpacity
+                            onPress={() => {
+                              const new_val = this.state.keys;
+                              let price = this.state.price;
+                              price -= parseInt(this.props.cart[val].price);
+                              delete new_val[index];
+                              this.setState({
+                                keys: new_val,
+                                price
+                              }, () => {
+                                this.props.removeFromCart(val)
+                              });
+                              }
                             }
-                          }
-                        >
-                          <AntDesign name="closecircle" size={20} style={{ marginRight: 10, color: '#909090' }} />
-                        </TouchableOpacity>
-                      </View>
+                          >
+                            <AntDesign name="closecircle" size={20} style={{ marginRight: 10, color: '#909090' }} />
+                          </TouchableOpacity>
+                        </View>
+                      }
                     </View>
                   );
                 }
