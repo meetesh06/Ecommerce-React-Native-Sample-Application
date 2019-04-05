@@ -48,6 +48,12 @@ Navigation.registerComponent(`navigation.customer.customerHome`,
 // Navigation.registerComponent(`navigation.customer.customerHome`, reduxStoreWrapper(CustomerHome, store), () => CustomerHome);
 Navigation.registerComponent(`navigation.customer.customerSearch`, () => CustomerSearch);
 Navigation.registerComponent(`navigation.customer.customerProfile`, () => CustomerProfile);
+Navigation.registerComponent(`navigation.customer.customerProfile`,
+() => (props) => (
+  <Provider store={store}>
+    <CustomerProfile {...props} />
+  </Provider>
+));
 Navigation.registerComponent(`navigation.customer.productDetail`,
 () => (props) => (
   <Provider store={store}>

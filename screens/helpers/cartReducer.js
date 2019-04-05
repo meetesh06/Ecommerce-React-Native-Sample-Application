@@ -15,7 +15,8 @@ const cartReducer = (state = INITIAL_STATE, action) => {
       delete new_data[action.payload];
       return { ...new_data }
     case 'COMPLETE_PAYMENT':
-      new_data = { state }
+      return { }
+    case 'LOGOUT':
       return { }
     default:
       return state

@@ -3,34 +3,31 @@ import { Text, SafeAreaView, View, Image, TouchableOpacity } from 'react-native'
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SearchBar from 'react-native-searchbar';
 
-const items = [
-  1337,
-  'janeway',
-  {
-    lots: 'of',
-    different: {
-      types: 0,
-      data: false,
-      that: {
-        can: {
-          be: {
-            quite: {
-              complex: {
-                hidden: [ 'gold!' ],
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-  [ 4, 2, 'tree' ],
-];
-
 export default class App extends Component {
   componentDidMount() {
     this.searchBar.hide();
   }
+
+  handleCartOpen = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        id: 'cart',
+        name: 'navigation.customer.cart',
+        options: {
+          topBar: {
+            visible: false,
+            drawBehind: true
+          },
+          bottomTabs: {
+            animate: true,
+            visible: false,
+            drawBehind: true
+          }
+        }
+      }
+    });
+  }
+  
   render() {
     return (
       <SafeAreaView
@@ -64,33 +61,7 @@ export default class App extends Component {
           >
             Textile Application
           </Text>
-          <TouchableOpacity
-            style={{
-              alignSelf: 'center',
-              marginRight: 10,
-              flexDirection: 'row'
-            }}
-          >
-            <EvilIcons name="cart" size={30} style={{ color: '#ff8400'  }} />
-            <View
-              style={{
-                alignSelf: 'center',
-                backgroundColor: '#f0f0f0',
-                padding: 4,
-                borderRadius: 10
-              }}
-            >
-              <Text
-                style={{
-                  justifyContent: 'center',
-                  color: '#ff8400'
-                }}
-              >
-                10
-              </Text>
-
-            </View>
-          </TouchableOpacity>
+          
           <TouchableOpacity
             onPress={() => this.searchBar.show()}
             style={{

@@ -3,12 +3,14 @@ import { AsyncStorage, Text, SafeAreaView, View, Image, ScrollView, TouchableOpa
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Navigation } from "react-native-navigation";
+import {connect} from 'react-redux';
 
-export default class App extends Component {
+class CustomerProfile extends Component {
 
   handleLogout = async () => {
     await AsyncStorage.removeItem('LOGGED_IN');
     await AsyncStorage.removeItem('LOGGED_IN_TYPE');
+    this.props.logout();
     Navigation.setRoot({
       root: {
         stack: {
@@ -63,31 +65,15 @@ export default class App extends Component {
             Textile Application
           </Text>
           <TouchableOpacity
+            onPress={this.handleLogout}
             style={{
               alignSelf: 'center',
               marginRight: 10,
               flexDirection: 'row'
             }}
           >
-            <EvilIcons name="cart" size={30} style={{ color: '#ff8400'  }} />
-            <View
-              style={{
-                alignSelf: 'center',
-                backgroundColor: '#f0f0f0',
-                padding: 4,
-                borderRadius: 10
-              }}
-            >
-              <Text
-                style={{
-                  justifyContent: 'center',
-                  color: '#ff8400'
-                }}
-              >
-                10
-              </Text>
-
-            </View>
+            <MaterialIcons name="exit-to-app" size={30} style={{ color: '#ff8400'  }} />
+            
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -135,26 +121,30 @@ export default class App extends Component {
             </Text>
 
           </View>
-          <TouchableOpacity
-            onPress={this.handleLogout}
-            style={{
-              backgroundColor: '#dddfdf',
-              padding: 15
-            }}
-          >
-            <Text
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: '#3f3f3f'
-              }}
-            >
-              LOGOUT
-            </Text>
-          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     );
   }
 }
 
+
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+const mapDispatchToProps = dispatch => (
+  {
+    logout: (item) => {
+      dispatch({
+        type: 'LOGOUT',
+        payload: item
+      })
+    },
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerProfile);
+// export default CustomerProfile;

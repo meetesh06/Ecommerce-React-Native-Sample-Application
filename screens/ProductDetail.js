@@ -28,7 +28,8 @@ class ProductDetail extends Component {
           },
           bottomTabs: {
             animate: true,
-            visible: false
+            visible: false,
+            drawBehind: true
           }
         }
       }

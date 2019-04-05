@@ -62,10 +62,10 @@ export default class App extends Component {
       realm.write(() => {
         try {
           realm.create('Products', product);
-          Alert.alert('new product created successfully');
-          Navigation.popToRoot(componentId);
         } catch (e) {
           Alert.alert(JSON.stringify(e));
+        } finally {
+          Navigation.popToRoot(componentId);
         }
       });
     });

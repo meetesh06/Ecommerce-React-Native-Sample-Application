@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { RefreshControl, Image, FlatList, AsyncStorage, Text, SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Alert, RefreshControl, Image, FlatList, AsyncStorage, Text, SafeAreaView, View, ScrollView, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Navigation } from 'react-native-navigation';
 import Realm from '../realm';
@@ -83,6 +83,10 @@ export default class App extends Component {
 
   componentDidAppear() {
     this._onRefresh();
+  }
+
+  handleProductOpen = (item) => {
+    Alert.alert(JSON.stringify(JSON.parse(item.sales)))
   }
 
   render() {
@@ -214,6 +218,7 @@ export default class App extends Component {
             data={this.state.products}
             renderItem={({item}) => 
               <TouchableOpacity
+                onPress={() => this.handleProductOpen(item)}
                 style={{
                   flex: 1,
                   // justifyContent: 'center',

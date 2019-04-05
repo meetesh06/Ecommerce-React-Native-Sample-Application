@@ -30,7 +30,8 @@ class CustomerHome extends Component {
           },
           bottomTabs: {
             animate: true,
-            visible: false
+            visible: false,
+            drawBehind: true
           }
         }
       }
