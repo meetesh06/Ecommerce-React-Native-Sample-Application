@@ -290,7 +290,7 @@ export default class App extends Component {
                       margin: 5,
                     }}
                   >
-                    {item.price}
+                    Rs. {item.price}
                   </Text>
                 </View>
               </TouchableOpacity>

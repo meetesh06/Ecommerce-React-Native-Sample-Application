@@ -5,8 +5,9 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Realm from '../realm';
 import { Navigation } from 'react-native-navigation';
+import {connect} from 'react-redux';
 
-export default class App extends Component {
+class CustomerHome extends Component {
   processRealmObj = (RealmObject, callback) => {
     const result = Object.keys(RealmObject).map(key => ({ ...RealmObject[key] }));
     callback(result);
@@ -15,6 +16,25 @@ export default class App extends Component {
   state = {
     shops: [],
     final: {}
+  }
+
+  handleCartOpen = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        id: 'cart',
+        name: 'navigation.customer.cart',
+        options: {
+          topBar: {
+            visible: false,
+            drawBehind: true
+          },
+          bottomTabs: {
+            animate: true,
+            visible: false
+          }
+        }
+      }
+    });
   }
 
   _onRefresh = () => {
@@ -41,12 +61,14 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     this._onRefresh();
   }
 
   handleProductDetail = (_id) => {
     Navigation.push(this.props.componentId, {
       component: {
+        id: 'product_detail',
         name: 'navigation.customer.productDetail',
         passProps: {
           _id
@@ -100,6 +122,7 @@ export default class App extends Component {
             Textile Application
           </Text>
           <TouchableOpacity
+            onPress={this.handleCartOpen}
             style={{
               alignSelf: 'center',
               marginRight: 10,
@@ -112,16 +135,20 @@ export default class App extends Component {
                 alignSelf: 'center',
                 backgroundColor: '#f0f0f0',
                 padding: 4,
+                width: 25,
+                justifyContent: 'center',
+                height: 25,
                 borderRadius: 10
               }}
             >
               <Text
                 style={{
                   justifyContent: 'center',
+                  textAlign: 'center',
                   color: '#ff8400'
                 }}
               >
-                10
+                {Object.keys(this.props.cart).length}
               </Text>
 
             </View>
@@ -217,6 +244,7 @@ export default class App extends Component {
             </View>
   
             <FlatList
+              keyExtractor={(val, index) => index}
               horizontal
               data={this.state.final[value]}
               showsHorizontalScrollIndicator={false}
@@ -357,3 +385,21 @@ export default class App extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+const mapDispatchToProps = dispatch => (
+  {
+    addToCart: (item) => {
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: item
+      })
+    }
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerHome);

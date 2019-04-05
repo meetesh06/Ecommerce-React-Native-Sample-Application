@@ -5,17 +5,50 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Realm from '../realm';
 import { Navigation } from 'react-native-navigation';
+import {connect} from 'react-redux';
 
-export default class App extends Component {
+class ProductDetail extends Component {
   state = {
     media: {},
     name: '',
     description: '',
-    price: ''
+    price: '',
+    added: false
+  }
+
+  handleCartOpen = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        id: 'cart',
+        name: 'navigation.customer.cart',
+        options: {
+          topBar: {
+            visible: false,
+            drawBehind: true
+          },
+          bottomTabs: {
+            animate: true,
+            visible: false
+          }
+        }
+      }
+    });
+  }
+
+  handleCart = () => {
+    const alreadyInCart = this.props.cart[this.props._id] !== undefined;
+    if(alreadyInCart) {
+      this.props.removeFromCart(this.props._id)
+    } else {
+      this.props.addToCart({
+        ...this.state, _id: this.props._id
+      })
+    }
   }
 
   componentDidMount() {
     Realm.getRealm((realm) => {
+      console.log(this.props);
       let product = realm.objects('Products').filtered(`_id = "${this.props._id}"`);
       this.setState({
         media: JSON.parse(product[0].media),
@@ -23,11 +56,12 @@ export default class App extends Component {
         description: product[0].description,
         price: product[0].price,
       })
-      console.log(product[0]);
+      
     });
   }
   
   render() {
+    const alreadyInCart = this.props.cart[this.props._id] !== undefined;
     return (
       <SafeAreaView
         style={{
@@ -59,7 +93,6 @@ export default class App extends Component {
             }}
           >
             <AntDesign name="left" size={25} style={{ color: '#ff8400'  }} />
-            
           </TouchableOpacity>
           <Text
             style={{
@@ -72,6 +105,7 @@ export default class App extends Component {
           >
           </Text>
           <TouchableOpacity
+            onPress={this.handleCartOpen}
             style={{
               alignSelf: 'center',
               marginRight: 10,
@@ -84,16 +118,20 @@ export default class App extends Component {
                 alignSelf: 'center',
                 backgroundColor: '#f0f0f0',
                 padding: 4,
+                width: 25,
+                justifyContent: 'center',
+                height: 25,
                 borderRadius: 10
               }}
             >
               <Text
                 style={{
                   justifyContent: 'center',
+                  textAlign: 'center',
                   color: '#ff8400'
                 }}
               >
-                10
+                {Object.keys(this.props.cart).length}
               </Text>
 
             </View>
@@ -134,9 +172,10 @@ export default class App extends Component {
 
         </ScrollView> 
         <TouchableOpacity
+          onPress={this.handleCart}
           style={{
             position: 'absolute',
-            backgroundColor: '#ff8400',
+            backgroundColor: this.props.cart[this.props._id] !== undefined ? '#c0c0c0' : '#ff8400',
             width: '100%',
             padding: 20,
             bottom: 0
@@ -150,7 +189,13 @@ export default class App extends Component {
               fontSize: 20
             }}
           >
-            Add to Cart ( Rs. {this.state.price} )
+            {
+              alreadyInCart && "Remove from cart"
+            }
+            {
+              !alreadyInCart && `Add to Cart ( Rs. ${this.state.price} )`
+            }
+            
           </Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -158,3 +203,28 @@ export default class App extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+const mapDispatchToProps = dispatch => (
+  {
+    addToCart: (item) => {
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: item
+      })
+    },
+    removeFromCart: (_id) => {
+      dispatch({
+        type: 'REMOVE_ITEM',
+        payload: _id
+      })
+    }
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);
+// export default ProductDetail;
