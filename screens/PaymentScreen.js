@@ -67,6 +67,7 @@ class PaymentScreen extends Component {
         });
       })
       Navigation.popToRoot(this.props.componentId);
+      this.props.completeOrder();
       Alert.alert('order completed successfully');
     })
   }

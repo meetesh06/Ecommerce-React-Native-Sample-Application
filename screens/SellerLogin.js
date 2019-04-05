@@ -4,11 +4,11 @@ import { Navigation } from 'react-native-navigation';
 
 const dummyLoginData = {
   'test1@gmail.com': {
-    password: 'hellouser1',
+    password: 'test1',
     name: 'Seller Shop 1'
   },
   'test2@gmail.com': {
-    password: 'hellouser2',
+    password: 'test2',
     name: 'Seller Shop 2'
   },
 }
@@ -27,7 +27,7 @@ export default class App extends Component {
       try {
         await AsyncStorage.setItem('LOGGED_IN', 'true');
         await AsyncStorage.setItem('LOGGED_IN_TYPE', JSON.stringify({
-          name: dummyLoginData[email].password,
+          name: dummyLoginData[email].name,
           email: email
         }));
         Navigation.setRoot({

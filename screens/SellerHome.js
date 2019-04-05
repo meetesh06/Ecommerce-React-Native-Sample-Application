@@ -86,7 +86,21 @@ export default class App extends Component {
   }
 
   handleProductOpen = (item) => {
-    Alert.alert(JSON.stringify(JSON.parse(item.sales)))
+    Navigation.push(this.props.componentId, {
+      component: {
+        id: 'EditProductPage',
+        name: 'navigation.seller.editProduct',
+        passProps: {
+          item
+        },
+        options: {
+          topBar: {
+            visible: false,
+            drawBehind: true
+          }
+        }
+      }
+    });
   }
 
   render() {
@@ -213,8 +227,7 @@ export default class App extends Component {
             </Text>
           </View>
           </View>}
-          <FlatList
-            
+          <FlatList  
             data={this.state.products}
             renderItem={({item}) => 
               <TouchableOpacity

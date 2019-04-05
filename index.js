@@ -19,6 +19,8 @@ import {Provider} from 'react-redux';
 import reducer from './screens/helpers/cartReducer';
 import PaymentScreen from './screens/PaymentScreen';
 
+import EditProduct from './screens/EditProduct';
+
 export const store = createStore(reducer);
 
 function reduxStoreWrapper (MyComponent, store) {
@@ -77,6 +79,7 @@ Navigation.registerComponent(`navigation.customer.paymentScreen`,
 
 Navigation.registerComponent(`navigation.seller.sellerHome`, () => SellerHome);
 Navigation.registerComponent(`navigation.seller.createProduct`, () => CreateProduct);
+Navigation.registerComponent(`navigation.seller.editProduct`, () => EditProduct);
 
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({

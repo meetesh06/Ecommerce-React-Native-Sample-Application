@@ -247,7 +247,7 @@ export default class App extends Component {
                 <Text style={{ color: '#333', textAlign: 'center' }}>Login as a Seller ?</Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ textAlign: 'center', fontSize: 10, margin: 5 }}>Created By Meetesh Mehta</Text>
+            <Text style={{ textAlign: 'center', fontSize: 10, marginBottom: 20 }}>Created By Meetesh Mehta</Text>
           </View>
         }
         

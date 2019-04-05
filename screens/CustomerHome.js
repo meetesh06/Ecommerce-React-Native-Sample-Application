@@ -81,7 +81,8 @@ class CustomerHome extends Component {
           },
           bottomTabs: {
             animate: true,
-            visible: false
+            visible: false,
+            drawBehind: true
           }
         }
       }
@@ -312,7 +313,7 @@ class CustomerHome extends Component {
                 fontWeight: '500'
               }}
             >
-              Demo Shop 1
+              This is a demo shop
             </Text>
             <TouchableOpacity
               style={{
